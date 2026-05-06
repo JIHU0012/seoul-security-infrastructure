@@ -11,21 +11,22 @@ import os
 st.set_page_config(page_title="서울특별시 치안 인프라 분석", page_icon="🚓", layout="wide")
 
 # 다크 테마에 맞춘 세련된 커스텀 CSS 적용
-# main-title의 font-size를 2.2rem -> 2.7rem으로 더 크게 키웠습니다.
+# main-title의 font-size를 3.5rem으로 대폭 키워서 한눈에 보이게 만들었습니다.
 st.markdown("""
     <style>
         .main-title {
-            font-size: 2.7rem; 
+            font-size: 3.5rem; /* 소제목보다 훨씬 크게 압도적인 크기로 설정 */
             font-weight: 900;
             color: #ffffff;
-            white-space: nowrap; 
-            letter-spacing: -1.5px; /* 글씨가 커져도 한 줄에 들어가도록 자간 조절 */
-            margin-bottom: 5px;
+            letter-spacing: -2px; /* 자간을 좁혀서 한 줄에 최대한 꽉 차게 들어오도록 조절 */
+            word-break: keep-all; /* 모니터 크기가 작아도 단어 단위로 예쁘게 줄바꿈되도록 보호 */
+            margin-bottom: 10px;
+            line-height: 1.2;
         }
         .sub-title {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             color: #a0aec0;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             font-weight: 400;
         }
         .metric-box {
