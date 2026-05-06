@@ -10,21 +10,23 @@ import os
 # ---------------------------------------------------------
 st.set_page_config(page_title="서울특별시 치안 인프라 분석", page_icon="🚓", layout="wide")
 
-# 다크 테마에 맞춘 세련된 커스텀 CSS 적용 및 제목 크기 조절
-# 한 줄에 제목이 들어가도록 폰트 크기(font-size)를 조정했습니다.
+# 다크 테마에 맞춘 세련된 커스텀 CSS 적용
+# main-title의 font-size를 2.2rem -> 2.7rem으로 더 크게 키웠습니다.
 st.markdown("""
     <style>
         .main-title {
-            font-size: 2.2rem;
-            font-weight: 800;
+            font-size: 2.7rem; 
+            font-weight: 900;
             color: #ffffff;
             white-space: nowrap; 
-            margin-bottom: 0px;
+            letter-spacing: -1.5px; /* 글씨가 커져도 한 줄에 들어가도록 자간 조절 */
+            margin-bottom: 5px;
         }
         .sub-title {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             color: #a0aec0;
             margin-bottom: 30px;
+            font-weight: 400;
         }
         .metric-box {
             background-color: #1e1e2d;
@@ -37,11 +39,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ---------------------------------------------------------
+# 2. 메인 제목 및 부제목 출력
+# ---------------------------------------------------------
 st.markdown('<p class="main-title">🚓 서울특별시 치안 인프라 & 범죄 분석 대시보드</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-title">자치구별 CCTV, 가로등, 비상벨 인프라와 범죄 발생 관계를 분석하여 치안 취약 지역을 발굴합니다.</p>', unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. 데이터베이스 연결 및 데이터 로드
+# 3. 데이터베이스 연결 및 데이터 로드
 # ---------------------------------------------------------
 @st.cache_data
 def load_data():
@@ -66,7 +71,7 @@ def load_data():
 df_analysis, df_cctv = load_data()
 
 # ---------------------------------------------------------
-# 3. 사이드바 (자치구 선택 필터)
+# 4. 사이드바 (자치구 선택 필터)
 # ---------------------------------------------------------
 st.sidebar.header("🔍 분석 옵션")
 gu_list = ['전체'] + list(df_analysis['자치구'].unique())
@@ -80,7 +85,7 @@ else:
     filtered_cctv = df_cctv[df_cctv['자치구'] == selected_gu]
 
 # ---------------------------------------------------------
-# 4. 핵심 지표 (다크 테마에 맞춘 메트릭 디자인)
+# 5. 핵심 지표 (다크 테마에 맞춘 메트릭 디자인)
 # ---------------------------------------------------------
 st.subheader(f"📌 {selected_gu} 치안 인프라 요약")
 
@@ -90,7 +95,6 @@ total_bell = int(filtered_analysis['비상벨수'].sum())
 
 col1, col2, col3 = st.columns(3)
 
-# 어두운 배경에 네온 컬러 포인트를 주어 세련되게 표현
 with col1:
     st.markdown(f"""
     <div class="metric-box">
@@ -118,7 +122,7 @@ with col3:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 5. 지도 시각화 (서울 중심부 포커스 & 점 크기 축소)
+# 6. 지도 시각화 (서울 중심부 포커스 & 점 크기 축소)
 # ---------------------------------------------------------
 st.subheader(f"🗺️ {selected_gu} CCTV 분포 지도")
 
@@ -126,27 +130,23 @@ map_data = filtered_cctv[['WGS84위도', 'WGS84경도']].rename(
     columns={'WGS84위도': 'lat', 'WGS84경도': 'lon'}
 )
 
-# 데이터가 있을 때만 지도 생성
 if not map_data.empty:
-    # PyDeck을 사용하여 지도 초기 시점을 서울(위도 37.56, 경도 126.98)로 고정하고 줌 레벨 조정
     view_state = pdk.ViewState(
         latitude=37.5665 if selected_gu == '전체' else map_data['lat'].mean(),
         longitude=126.9780 if selected_gu == '전체' else map_data['lon'].mean(),
-        zoom=10.5 if selected_gu == '전체' else 13, # 전체면 넓게, 특정 구면 줌 인
+        zoom=10.5 if selected_gu == '전체' else 13, 
         pitch=0
     )
     
-    # 점의 크기와 투명도 조절 (get_radius로 반경 축소, get_fill_color로 예쁜 빨간색 설정)
     layer = pdk.Layer(
         'ScatterplotLayer',
         data=map_data,
         get_position='[lon, lat]',
-        get_radius=25, # 기존보다 훨씬 작고 촘촘하게 설정
+        get_radius=25, 
         get_fill_color='[255, 75, 75, 180]',
         pickable=True
     )
     
-    # 다크 테마 맵 적용 (map_style='dark')
     st.pydeck_chart(pdk.Deck(
         map_style='dark', 
         initial_view_state=view_state,
@@ -159,7 +159,7 @@ else:
 st.markdown("---")
 
 # ---------------------------------------------------------
-# 6. 인사이트 분석 (Plotly Dark 테마 적용)
+# 7. 인사이트 분석 (Plotly Dark 테마 적용)
 # ---------------------------------------------------------
 st.subheader("📊 치안 인프라 및 범죄 심층 분석")
 
@@ -175,7 +175,7 @@ with row1_col1:
         size='인프라당_범죄발생',
         hover_data=['인프라당_범죄발생'],
         trendline="ols", 
-        template="plotly_dark" # 차트 배경을 다크 테마로 변경
+        template="plotly_dark"
     )
     st.plotly_chart(fig_scatter, use_container_width=True)
 
@@ -198,7 +198,7 @@ with row1_col2:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 7. 치안 인프라 확충 시급 지역
+# 8. 치안 인프라 확충 시급 지역
 # ---------------------------------------------------------
 st.subheader("🚨 치안 인프라 확충 시급 지역")
 row2_col1, row2_col2 = st.columns(2)
