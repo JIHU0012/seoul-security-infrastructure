@@ -10,25 +10,9 @@ import os
 # ---------------------------------------------------------
 st.set_page_config(page_title="서울특별시 치안 인프라 분석", page_icon="🚓", layout="wide")
 
-# 다크 테마에 맞춘 세련된 커스텀 CSS 적용
-# main-title의 font-size를 3.5rem으로 대폭 키워서 한눈에 보이게 만들었습니다.
+# CSS: 메트릭 박스 전용 디자인
 st.markdown("""
     <style>
-        .main-title {
-            font-size: 3.5rem; /* 소제목보다 훨씬 크게 압도적인 크기로 설정 */
-            font-weight: 900;
-            color: #ffffff;
-            letter-spacing: -2px; /* 자간을 좁혀서 한 줄에 최대한 꽉 차게 들어오도록 조절 */
-            word-break: keep-all; /* 모니터 크기가 작아도 단어 단위로 예쁘게 줄바꿈되도록 보호 */
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }
-        .sub-title {
-            font-size: 1.2rem;
-            color: #a0aec0;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
         .metric-box {
             background-color: #1e1e2d;
             padding: 20px;
@@ -41,10 +25,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. 메인 제목 및 부제목 출력
+# 2. 메인 제목 및 부제목 출력 (강제 크기 지정 - 매우 크게!)
 # ---------------------------------------------------------
-st.markdown('<p class="main-title">🚓 서울특별시 치안 인프라 & 범죄 분석 대시보드</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-title">자치구별 CCTV, 가로등, 비상벨 인프라와 범죄 발생 관계를 분석하여 치안 취약 지역을 발굴합니다.</p>', unsafe_allow_html=True)
+# font-size를 70px(약 4.5rem 이상)로 고정하여 무조건 한눈에 확 들어오게 만들었습니다.
+st.markdown("""
+    <div style="font-size: 70px; font-weight: 900; color: #ffffff; letter-spacing: -2.5px; word-break: keep-all; line-height: 1.2; margin-top: 10px; margin-bottom: 10px;">
+        🚓 서울특별시 치안 인프라 & 범죄 분석 대시보드
+    </div>
+    <div style="font-size: 22px; color: #a0aec0; margin-bottom: 50px; font-weight: 400;">
+        자치구별 CCTV, 가로등, 비상벨 인프라와 범죄 발생 관계를 분석하여 치안 취약 지역을 발굴합니다.
+    </div>
+""", unsafe_allow_html=True)
 
 # ---------------------------------------------------------
 # 3. 데이터베이스 연결 및 데이터 로드
@@ -63,7 +54,7 @@ def load_data():
     df_cctv = pd.read_sql("SELECT 자치구, WGS84위도, WGS84경도 FROM CCTV", conn)
     conn.close()
     
-    # [파생 변수 생성]
+    #[파생 변수 생성]
     df_analysis['총_인프라수'] = df_analysis['CCTV수'] + df_analysis['가로등수'] + df_analysis['비상벨수']
     df_analysis['인프라당_범죄발생'] = df_analysis['총범죄_발생'] / df_analysis['총_인프라수'].replace(0, 1)
     
