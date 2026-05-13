@@ -1,8 +1,6 @@
 https://aistudio.google.com/prompts/1LqbpL3x45eEyNZPxIeq63WFqIuuB1Dkl
 
-1. 데이터 클렌징 및 DB 구축 과정 (Data Pipeline)
-초보자도 이해하기 쉽게 정리한 데이터의 여정입니다.
-
+1. 데이터 클렌징 및 DB 구축 과정 
 수집 (Ingestion): 서울시 공공데이터 포털에서 CCTV, 가로등, 비상벨, 범죄 통계 등 성격이 다른 4개의 데이터를 수집
 
 정제 (Cleaning):
