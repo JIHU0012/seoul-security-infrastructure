@@ -1,4 +1,4 @@
-https://aistudio.google.com/prompts/1LqbpL3x45eEyNZPxIeq63WFqIuuB1Dkl
+https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221LqbpL3x45eEyNZPxIeq63WFqIuuB1Dkl%22%5D,%22action%22:%22open%22,%22userId%22:%22118002786428743735835%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing
 
 1. 데이터 클렌징 및 DB 구축 과정 
 수집 (Ingestion): 서울시 공공데이터 포털에서 CCTV, 가로등, 비상벨, 범죄 통계 등 성격이 다른 4개의 데이터를 수집
